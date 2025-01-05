@@ -1,0 +1,26 @@
+services:
+  database:
+    container_name: kindian-local-database
+    image: postgres:13-alpine
+    env_file:
+      - ./.env.local
+    volumes:
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - kindian-local-database-volume:/kindian/data
+    restart: unless-stopped
+    ports:
+      - "15435:5432"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1M"
+        max-file: "10"
+
+volumes:
+  kindian-local-database-volume:
+    driver: local
+
+networks:
+  kindian-local-internals-network:
+    name: kindian-local-internals-network
+    driver: bridge
